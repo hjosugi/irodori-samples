@@ -401,6 +401,39 @@
       ]
     },
     {
+      "id": "motherduck",
+      "label": "MotherDuck",
+      "family": "analytical / lakehouse",
+      "irodoriStatus": "extension",
+      "whatYouCanDo": [
+        "Installable connector tracked separately from the embedded DuckDB adapter.",
+        "Attach MotherDuck cloud databases and browse cloud/local analytical tables through the DuckDB workflow.",
+        "Track token handling, database attach, hybrid local/cloud query execution, and cloud table discovery UX."
+      ],
+      "features": [
+        {
+          "id": "motherduck-extension-registration",
+          "title": "Installable MotherDuck connector registration",
+          "referenceOnly": true
+        },
+        {
+          "id": "motherduck-cloud-duckdb-workflow",
+          "title": "Cloud DuckDB attach and query workflow",
+          "referenceOnly": true
+        }
+      ],
+      "resources": [
+        {
+          "label": "MotherDuck documentation",
+          "url": "https://motherduck.com/docs/"
+        },
+        {
+          "label": "DuckDB MotherDuck extension",
+          "url": "https://duckdb.org/docs/stable/core_extensions/motherduck"
+        }
+      ]
+    },
+    {
       "id": "cockroachdb",
       "label": "CockroachDB",
       "family": "distributed-sql",
@@ -784,6 +817,35 @@
       ]
     },
     {
+      "id": "kvStore",
+      "label": "Generic KV Store",
+      "family": "key-value",
+      "irodoriStatus": "recognized_no_connector",
+      "whatYouCanDo": [
+        "Generic KV Store is registered in Irodori's engine selector and tracked in the source catalog.",
+        "Keep the provider-neutral key-value connector contract visible while concrete stores route through extensions.",
+        "Use this catalog entry to attach future generic key browser, TTL, namespace, and credential UX requirements."
+      ],
+      "features": [
+        {
+          "id": "kvStore-registration",
+          "title": "Generic key-value engine registration",
+          "referenceOnly": true
+        },
+        {
+          "id": "kvStore-extension-contract",
+          "title": "Provider-neutral key-value extension contract",
+          "referenceOnly": true
+        }
+      ],
+      "resources": [
+        {
+          "label": "Irodori KV Store connector repository",
+          "url": "https://github.com/hjosugi/irodori-extension-kv-store"
+        }
+      ]
+    },
+    {
       "id": "cassandra",
       "label": "Cassandra",
       "family": "wide-column",
@@ -900,6 +962,35 @@
       ]
     },
     {
+      "id": "athena",
+      "label": "Amazon Athena",
+      "family": "lakehouse / query-engine",
+      "irodoriStatus": "recognized_no_connector",
+      "whatYouCanDo": [
+        "Amazon Athena is registered in Irodori's engine selector and tracked in the source catalog.",
+        "Keep Glue catalog, workgroup, result-location, and IAM requirements visible while the production connector is pending.",
+        "Use this catalog entry to attach future Athena sample projects, verification queries, and source-specific UX requirements."
+      ],
+      "features": [
+        {
+          "id": "athena-registration",
+          "title": "Amazon Athena engine registration",
+          "referenceOnly": true
+        },
+        {
+          "id": "athena-glue-workgroup",
+          "title": "Glue catalog, workgroup, and S3 result-location workflow",
+          "referenceOnly": true
+        }
+      ],
+      "resources": [
+        {
+          "label": "Amazon Athena User Guide",
+          "url": "https://docs.aws.amazon.com/athena/latest/ug/what-is.html"
+        }
+      ]
+    },
+    {
       "id": "bigtable",
       "label": "Bigtable",
       "family": "wide-column",
@@ -925,6 +1016,35 @@
         {
           "label": "Bigtable Documentation",
           "url": "https://cloud.google.com/bigtable/docs"
+        }
+      ]
+    },
+    {
+      "id": "cloudSpanner",
+      "label": "Cloud Spanner",
+      "family": "distributed-sql",
+      "irodoriStatus": "recognized_no_connector",
+      "whatYouCanDo": [
+        "Cloud Spanner is registered in Irodori's engine selector and tracked in the source catalog.",
+        "Keep project, instance, database, IAM, GoogleSQL, and PostgreSQL-dialect requirements visible while the connector is pending.",
+        "Use this catalog entry to attach future Spanner sample projects, verification queries, and source-specific UX requirements."
+      ],
+      "features": [
+        {
+          "id": "cloudSpanner-registration",
+          "title": "Cloud Spanner engine registration",
+          "referenceOnly": true
+        },
+        {
+          "id": "cloudSpanner-google-sql",
+          "title": "GoogleSQL database and instance workflow",
+          "referenceOnly": true
+        }
+      ],
+      "resources": [
+        {
+          "label": "Cloud Spanner documentation",
+          "url": "https://cloud.google.com/spanner/docs"
         }
       ]
     },
@@ -1194,23 +1314,23 @@
     },
     {
       "id": "elasticsearch",
-      "label": "Elasticsearch / OpenSearch",
+      "label": "Elasticsearch",
       "family": "search",
       "irodoriStatus": "recognized_no_connector",
       "whatYouCanDo": [
-        "Elasticsearch / OpenSearch is registered in Irodori's engine selector and tracked in the source catalog.",
+        "Elasticsearch is registered in Irodori's engine selector and tracked in the source catalog.",
         "Keep the source visible as recognized roadmap work while the production connector is pending.",
-        "Use this catalog entry to attach future sample projects, verification queries, and source-specific UX requirements."
+        "Use this catalog entry to attach future search-index sample projects, mappings, aggregations, and source-specific UX requirements."
       ],
       "features": [
         {
           "id": "elasticsearch-registration",
-          "title": "Elasticsearch / OpenSearch engine registration",
+          "title": "Elasticsearch engine registration",
           "referenceOnly": true
         },
         {
           "id": "elasticsearch-connector-roadmap",
-          "title": "Elasticsearch / OpenSearch connector and sample roadmap",
+          "title": "Elasticsearch connector and sample roadmap",
           "referenceOnly": true
         }
       ],
@@ -1218,10 +1338,35 @@
         {
           "label": "Elasticsearch documentation",
           "url": "https://www.elastic.co/docs/"
+        }
+      ]
+    },
+    {
+      "id": "openSearch",
+      "label": "OpenSearch",
+      "family": "search",
+      "irodoriStatus": "recognized_no_connector",
+      "whatYouCanDo": [
+        "OpenSearch is registered in Irodori's engine selector and tracked in the source catalog.",
+        "Keep index, data-stream, mapping, aggregation, security-plugin, and dashboard-oriented requirements visible while the connector is pending.",
+        "Use this catalog entry to attach future OpenSearch sample projects, verification queries, and source-specific UX requirements."
+      ],
+      "features": [
+        {
+          "id": "openSearch-registration",
+          "title": "OpenSearch engine registration",
+          "referenceOnly": true
         },
         {
+          "id": "openSearch-index-browser",
+          "title": "Index, data-stream, mapping, and aggregation workflow",
+          "referenceOnly": true
+        }
+      ],
+      "resources": [
+        {
           "label": "OpenSearch documentation",
-          "url": "https://docs.opensearch.org/"
+          "url": "https://docs.opensearch.org/latest/"
         }
       ]
     },
