@@ -109,3 +109,16 @@ scripts/dev-db.sh down postgres
   `make db-verify DB=oracle` explicitly.
 - MongoDB is a document store. Its query path accepts collection names or JSON
   collection/filter objects, not SQL.
+
+## License
+
+Irodori-authored sample definitions, scripts, and generated fixtures are
+available under `MIT OR 0BSD` unless a file says otherwise. See
+[LICENSE](LICENSE).
+
+## Disclaimer
+
+Sample containers, credentials, and generated data are for local development and
+testing only. Do not treat them as production configuration. For public product
+caveats, see the Irodori Table
+[disclaimer](https://hjosugi.github.io/irodori-docs/disclaimer.html).
