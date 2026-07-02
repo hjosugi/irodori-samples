@@ -126,7 +126,7 @@
       "status": "planned_table_format",
       "whatYouCanDo": [
         "Planned as a table-format/catalog source, not a SQL wire-compatible database.",
-        "Needs catalog connection support for REST, Hive Metastore, AWS Glue, JDBC catalogs, and object-store credentials.",
+        "Needs catalog connection support for REST, Hive Metastore, AWS Glue, JDBC catalogs, and external storage credentials.",
         "Expected Irodori UX includes catalog/table browser, schema/partition/snapshot inspection, metadata-driven previews, and execution through DuckDB/Trino/Spark/Athena-style engines."
       ],
       "features": [
@@ -813,35 +813,6 @@
         {
           "label": "Redis Docs",
           "url": "https://redis.io/docs/latest/"
-        }
-      ]
-    },
-    {
-      "id": "kvStore",
-      "label": "Generic KV Store",
-      "family": "key-value",
-      "irodoriStatus": "recognized_no_connector",
-      "whatYouCanDo": [
-        "Generic KV Store is registered in Irodori's engine selector and tracked in the source catalog.",
-        "Keep the provider-neutral key-value connector contract visible while concrete stores route through extensions.",
-        "Use this catalog entry to attach future generic key browser, TTL, namespace, and credential UX requirements."
-      ],
-      "features": [
-        {
-          "id": "kvStore-registration",
-          "title": "Generic key-value engine registration",
-          "referenceOnly": true
-        },
-        {
-          "id": "kvStore-extension-contract",
-          "title": "Provider-neutral key-value extension contract",
-          "referenceOnly": true
-        }
-      ],
-      "resources": [
-        {
-          "label": "Irodori KV Store connector repository",
-          "url": "https://github.com/hjosugi/irodori-extension-kv-store"
         }
       ]
     },
@@ -1628,43 +1599,6 @@
         {
           "label": "Amazon S3 Tables documentation",
           "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-tables.html"
-        }
-      ]
-    },
-    {
-      "id": "objectStore",
-      "label": "Object stores: S3 / GCS / Azure Blob",
-      "family": "object-store",
-      "irodoriStatus": "recognized_no_connector",
-      "whatYouCanDo": [
-        "Object stores: S3 / GCS / Azure Blob is registered in Irodori's engine selector and tracked in the source catalog.",
-        "Keep the source visible as recognized roadmap work while the production connector is pending.",
-        "Use this catalog entry to attach future sample projects, verification queries, and source-specific UX requirements."
-      ],
-      "features": [
-        {
-          "id": "objectStore-registration",
-          "title": "Object stores: S3 / GCS / Azure Blob engine registration",
-          "referenceOnly": true
-        },
-        {
-          "id": "objectStore-connector-roadmap",
-          "title": "Object stores: S3 / GCS / Azure Blob connector and sample roadmap",
-          "referenceOnly": true
-        }
-      ],
-      "resources": [
-        {
-          "label": "Amazon S3 documentation",
-          "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/"
-        },
-        {
-          "label": "Google Cloud Storage documentation",
-          "url": "https://cloud.google.com/storage/docs"
-        },
-        {
-          "label": "Azure Blob Storage documentation",
-          "url": "https://learn.microsoft.com/en-us/azure/storage/blobs/"
         }
       ]
     },
