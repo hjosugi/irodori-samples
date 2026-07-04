@@ -364,17 +364,17 @@
       "id": "duckdb",
       "label": "DuckDB",
       "family": "analytical",
-      "irodoriStatus": "verified",
+      "irodoriStatus": "extension",
       "whatYouCanDo": [
-        "Run embedded analytical SQL without a server.",
-        "Use DuckDB as a local analytics engine for files, generated data, and result exploration.",
+        "Install the DuckDB connector extension to run local or in-memory analytical SQL without a server.",
+        "Use DuckDB as an extension-provided local analytics engine for files, generated data, and result exploration.",
         "Exercise struct values, summarize, window functions, and EXPLAIN."
       ],
       "sampleProject": {
-        "kind": "embedded",
+        "kind": "extension",
         "directory": "samples/projects/duckdb",
         "queryFile": "samples/projects/duckdb/queries.sql",
-        "testCommand": "cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml --features duckdb duckdb_in_memory"
+        "testCommand": "make -C ../irodori-extensions/irodori-extension-duckdb check"
       },
       "features": [
         {
