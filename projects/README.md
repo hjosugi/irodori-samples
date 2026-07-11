@@ -1,3 +1,6 @@
+<!-- i18n: language-switcher -->
+[English](README.md) | [日本語](README.ja.md)
+
 # Sample query projects
 
 Engine-specific queries for manual checks in Irodori Table.
