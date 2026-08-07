@@ -1,0 +1,20 @@
+name: irodori-scylladb
+# Irodori URL: CQL localhost:59043, keyspace samples (no auth)
+# Same CQL seed as Cassandra — Irodori routes both through one adapter.
+services:
+  scylladb:
+    image: docker.io/scylladb/scylla:6.2
+    # Scylla grabs every core and all free memory unless told otherwise, and
+    # refuses to start on a host it considers misconfigured.
+    command: ["--smp", "1", "--memory", "1G", "--overprovisioned", "1", "--developer-mode", "1"]
+    environment:
+      TZ: UTC
+    ports:
+      - "59043:9042"
+    volumes:
+      - ../cassandra/01_samples.cql:/seed/01_samples.cql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe keyspaces' || exit 1"]
+      interval: 5s
+      timeout: 10s
+      retries: 60

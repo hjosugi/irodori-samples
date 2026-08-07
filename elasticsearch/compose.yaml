@@ -1,0 +1,19 @@
+name: irodori-elasticsearch
+# Irodori URL: http://localhost:59200  (security disabled, no credentials)
+# Needs the `irodori.elasticsearch` connector extension.
+# Seed with `scripts/seed.sh elasticsearch`.
+services:
+  elasticsearch:
+    image: docker.io/library/elasticsearch:8.15.3
+    environment:
+      discovery.type: single-node
+      # 8.x enables TLS and basic auth by default and then rejects plain HTTP.
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports:
+      - "59200:9200"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:9200/_cluster/health || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 60

@@ -1,0 +1,33 @@
+Redis feature sample for Irodori Table.
+Run against `task up -- redis` then `task seed -- redis`.
+
+Redis is not a table; Irodori projects keys and values into one. The seed uses
+five data types so each renders differently.
+
+--- what is in here -----------------------------------------------------------
+DBSIZE
+INFO keyspace
+SCAN 0 COUNT 20
+
+--- hashes: one per customer, product and order -------------------------------
+HGETALL customer:42
+HGET customer:42 tier
+TYPE customer:42
+OBJECT ENCODING customer:42
+
+--- sets: customers bucketed by tier ------------------------------------------
+SMEMBERS customers:tier:platinum
+SCARD customers:tier:bronze
+
+--- sorted set: customers ranked by credit limit ------------------------------
+ZREVRANGE customers:by_credit 0 9 WITHSCORES
+ZRANK customers:by_credit customer:42
+
+--- lists: each customer's order ids ------------------------------------------
+LLEN customer:42:orders
+LRANGE customer:42:orders 0 -1
+
+--- stream: the event log -----------------------------------------------------
+XLEN events:stream
+XRANGE events:stream - + COUNT 10
+XINFO STREAM events:stream

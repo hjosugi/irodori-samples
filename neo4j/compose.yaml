@@ -1,0 +1,21 @@
+name: irodori-neo4j
+# Irodori URL: bolt://localhost:57687  user neo4j / irodoripass
+# Browser: http://localhost:57474
+# Neo4j has no init hook, so the seed is applied by `scripts/seed.sh neo4j`.
+services:
+  neo4j:
+    image: docker.io/library/neo4j:5-community
+    environment:
+      # Neo4j rejects passwords shorter than 8 characters.
+      NEO4J_AUTH: neo4j/irodoripass
+      NEO4J_server_memory_heap_max__size: 512M
+    ports:
+      - "57687:7687"
+      - "57474:7474"
+    volumes:
+      - ./01_samples.cypher:/seed/01_samples.cypher:ro
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p irodoripass 'return 1' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 40

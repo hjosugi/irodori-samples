@@ -1,0 +1,43 @@
+{
+  "_comment": [
+    "Elasticsearch feature sample for Irodori Table.",
+    "Run against `task up -- elasticsearch`, then load with the seeder.",
+    "Needs the `irodori.elasticsearch` connector extension.",
+    "Each key below is a request Irodori can issue; the path is the index API."
+  ],
+
+  "count all orders": {
+    "path": "/orders/_count"
+  },
+
+  "top delivered orders": {
+    "path": "/orders/_search",
+    "body": {
+      "size": 5,
+      "query": { "term": { "status": "delivered" } },
+      "sort": [ { "total": "desc" } ]
+    }
+  },
+
+  "revenue by status": {
+    "path": "/orders/_search",
+    "body": {
+      "size": 0,
+      "aggs": {
+        "by_status": {
+          "terms": { "field": "status" },
+          "aggs": { "revenue": { "sum": { "field": "total" } } }
+        }
+      }
+    }
+  },
+
+  "full-text over customer names": {
+    "path": "/customers/_search",
+    "body": { "query": { "match": { "name": "Sakura" } } }
+  },
+
+  "mapping, to see how the seed typed each field": {
+    "path": "/orders/_mapping"
+  }
+}

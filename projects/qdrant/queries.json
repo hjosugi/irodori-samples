@@ -1,0 +1,34 @@
+{
+  "_comment": [
+    "Qdrant feature sample for Irodori Table.",
+    "Run against `task up -- qdrant`, then load with the seeder.",
+    "Needs the `irodori.qdrant` connector extension.",
+    "Vectors are built from category, supplier and price band, so a nearest",
+    "neighbour result is explicable against the relational rows."
+  ],
+
+  "collection info": {
+    "method": "GET",
+    "path": "/collections/products"
+  },
+
+  "scroll the first points": {
+    "path": "/collections/products/points/scroll",
+    "body": { "limit": 5, "with_payload": true }
+  },
+
+  "similarity search, filtered by category": {
+    "path": "/collections/products/points/search",
+    "body": {
+      "vector": "<paste the vector of any product here>",
+      "limit": 5,
+      "with_payload": true,
+      "filter": { "must": [ { "key": "category", "match": { "value": "Kitchen" } } ] }
+    }
+  },
+
+  "payload index list": {
+    "method": "GET",
+    "path": "/collections/products"
+  }
+}

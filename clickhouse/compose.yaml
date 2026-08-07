@@ -1,0 +1,24 @@
+name: irodori-clickhouse
+# Irodori URL: HTTP http://localhost:58123  user irodori / irodori, database samples
+# The seed is loaded by the image init hook, so `compose up` is all it takes.
+services:
+  clickhouse:
+    image: docker.io/clickhouse/clickhouse-server:24.8-alpine
+    environment:
+      CLICKHOUSE_USER: irodori
+      CLICKHOUSE_PASSWORD: irodori
+      CLICKHOUSE_DB: samples
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ports:
+      - "58123:8123"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - ./01_samples.sql:/docker-entrypoint-initdb.d/01_samples.sql:ro
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:8123/ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 40

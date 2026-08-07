@@ -1,0 +1,33 @@
+// ArangoDB feature sample for Irodori Table.
+// Run against `task up -- arangodb`, then load with the seeder.
+// Needs the `irodori.arangodb` connector extension.
+//
+// order_items is an EDGE collection: _from is the order, _to is the product.
+// That is the multi-model shape, and why Arango is here next to the plain
+// document stores.
+
+FOR c IN customers LIMIT 5 RETURN c
+
+// Aggregate, document-style.
+FOR o IN orders
+  FILTER o.status NOT IN ["cancelled", "refunded"]
+  COLLECT status = o.status WITH COUNT INTO n
+  RETURN { status, orders: n }
+
+// Traverse the edge collection: what this order contains.
+FOR p IN 1..1 OUTBOUND "orders/1" order_items
+  RETURN { sku: p.sku, name: p.name, category: p.category }
+
+// Two hops, the other way: which orders contain this product.
+FOR o IN 1..1 INBOUND "products/7" order_items
+  LIMIT 10
+  RETURN { order: o.id, customer: o.customer_id, total: o.total }
+
+// Join by key, since customer_id is a plain attribute.
+FOR o IN orders
+  FILTER o.status == "delivered"
+  SORT o.total DESC
+  LIMIT 5
+  FOR c IN customers
+    FILTER c._key == TO_STRING(o.customer_id)
+    RETURN { order: o.id, customer: c.name, country: c.country_code, total: o.total }

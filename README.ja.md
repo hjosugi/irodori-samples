@@ -5,6 +5,8 @@
 
 Irodori Table用のローカルデータベースコンテナとサンプルクエリ。
 
+**認証情報とポートは [CONNECTIONS.ja.md](CONNECTIONS.ja.md) にまとまっている** — `task urls` でも同じものが出る。
+
 ## 使い方
 
 ```sh

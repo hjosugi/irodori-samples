@@ -206,7 +206,7 @@
         "kind": "container",
         "directory": "samples/projects/postgres",
         "queryFile": "samples/projects/postgres/queries.sql",
-        "testCommand": "make db-verify DB=postgres"
+        "testCommand": "task db-verify DB=postgres"
       },
       "features": [
         {
@@ -250,7 +250,7 @@
         "kind": "container",
         "directory": "samples/projects/mysql",
         "queryFile": "samples/projects/mysql/queries.sql",
-        "testCommand": "make db-verify DB=mysql"
+        "testCommand": "task db-verify DB=mysql"
       },
       "features": [
         {
@@ -334,7 +334,7 @@
         "kind": "container",
         "directory": "samples/projects/sqlserver",
         "queryFile": "samples/projects/sqlserver/queries.sql",
-        "testCommand": "make db-verify DB=sqlserver"
+        "testCommand": "task db-verify DB=sqlserver"
       },
       "features": [
         {
@@ -447,7 +447,7 @@
         "kind": "container",
         "directory": "samples/projects/cockroachdb",
         "queryFile": "samples/projects/cockroachdb/queries.sql",
-        "testCommand": "make db-verify DB=cockroachdb"
+        "testCommand": "task db-verify DB=cockroachdb"
       },
       "features": [
         {
@@ -487,7 +487,7 @@
         "kind": "container",
         "directory": "samples/projects/yugabytedb",
         "queryFile": "samples/projects/yugabytedb/queries.sql",
-        "testCommand": "make db-verify DB=yugabytedb"
+        "testCommand": "task db-verify DB=yugabytedb"
       },
       "features": [
         {
@@ -555,7 +555,7 @@
         "kind": "container",
         "directory": "samples/projects/timescaledb",
         "queryFile": "samples/projects/timescaledb/queries.sql",
-        "testCommand": "make db-verify DB=timescaledb"
+        "testCommand": "task db-verify DB=timescaledb"
       },
       "features": [
         {
@@ -648,7 +648,7 @@
         "kind": "container",
         "directory": "samples/projects/mariadb",
         "queryFile": "samples/projects/mariadb/queries.sql",
-        "testCommand": "make db-verify DB=mariadb"
+        "testCommand": "task db-verify DB=mariadb"
       },
       "features": [
         {
@@ -688,7 +688,7 @@
         "kind": "container",
         "directory": "samples/projects/tidb",
         "queryFile": "samples/projects/tidb/queries.sql",
-        "testCommand": "make db-verify DB=tidb"
+        "testCommand": "task db-verify DB=tidb"
       },
       "features": [
         {
@@ -728,7 +728,7 @@
         "kind": "container",
         "directory": "samples/projects/mongodb",
         "queryFile": "samples/projects/mongodb/queries.js",
-        "testCommand": "make db-verify DB=mongodb"
+        "testCommand": "task db-verify DB=mongodb"
       },
       "features": [
         {
@@ -785,7 +785,13 @@
           "label": "Cypher Manual",
           "url": "https://neo4j.com/docs/cypher-manual/current/"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/neo4j",
+        "queryFile": "samples/projects/neo4j/queries.cypher",
+        "testCommand": "task up -- neo4j"
+      }
     },
     {
       "id": "redis",
@@ -814,7 +820,13 @@
           "label": "Redis Docs",
           "url": "https://redis.io/docs/latest/"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/redis",
+        "queryFile": "samples/projects/redis/queries.txt",
+        "testCommand": "task up -- redis"
+      }
     },
     {
       "id": "cassandra",
@@ -843,7 +855,13 @@
           "label": "Apache Cassandra Docs",
           "url": "https://cassandra.apache.org/doc/latest/"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/cassandra",
+        "queryFile": "samples/projects/cassandra/queries.cql",
+        "testCommand": "task up -- cassandra"
+      }
     },
     {
       "id": "clickhouse",
@@ -872,7 +890,13 @@
           "label": "ClickHouse Docs",
           "url": "https://clickhouse.com/docs/"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/clickhouse",
+        "queryFile": "samples/projects/clickhouse/queries.sql",
+        "testCommand": "task up -- clickhouse"
+      }
     },
     {
       "id": "snowflake",
@@ -1050,7 +1074,13 @@
           "label": "InfluxDB 3 SQL",
           "url": "https://docs.influxdata.com/influxdb3/core/query-data/sql/"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/influxdb",
+        "queryFile": "samples/projects/influxdb/queries.sql",
+        "testCommand": "task up -- influxdb"
+      }
     },
     {
       "id": "oracle",
@@ -1066,7 +1096,7 @@
         "kind": "container",
         "directory": "samples/projects/oracle",
         "queryFile": "samples/projects/oracle/queries.sql",
-        "testCommand": "make db-verify DB=oracle"
+        "testCommand": "task db-verify DB=oracle"
       },
       "features": [
         {
@@ -1114,7 +1144,13 @@
           "label": "Memgraph Docs",
           "url": "https://memgraph.com/docs"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/memgraph",
+        "queryFile": "samples/projects/memgraph/queries.cypher",
+        "testCommand": "task up -- memgraph"
+      }
     },
     {
       "id": "qdrant",
@@ -1138,7 +1174,13 @@
           "label": "Qdrant Documentation",
           "url": "https://qdrant.tech/documentation/"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/qdrant",
+        "queryFile": "samples/projects/qdrant/queries.json",
+        "testCommand": "task up -- qdrant"
+      }
     },
     {
       "id": "milvus",
@@ -1310,7 +1352,13 @@
           "label": "Elasticsearch documentation",
           "url": "https://www.elastic.co/docs/"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/elasticsearch",
+        "queryFile": "samples/projects/elasticsearch/queries.json",
+        "testCommand": "task up -- elasticsearch"
+      }
     },
     {
       "id": "openSearch",
@@ -1339,7 +1387,13 @@
           "label": "OpenSearch documentation",
           "url": "https://docs.opensearch.org/latest/"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/openSearch",
+        "queryFile": "samples/projects/openSearch/queries.json",
+        "testCommand": "task up -- openSearch"
+      }
     },
     {
       "id": "couchbase",
@@ -1397,7 +1451,13 @@
           "label": "DynamoDB documentation",
           "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/dynamodb",
+        "queryFile": "samples/projects/dynamodb/queries.json",
+        "testCommand": "task up -- dynamodb"
+      }
     },
     {
       "id": "scylladb",
@@ -1426,7 +1486,13 @@
           "label": "ScyllaDB documentation",
           "url": "https://opensource.docs.scylladb.com/"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/scylladb",
+        "queryFile": "samples/projects/scylladb/queries.cql",
+        "testCommand": "task up -- scylladb"
+      }
     },
     {
       "id": "arangodb",
@@ -1455,7 +1521,13 @@
           "label": "ArangoDB documentation",
           "url": "https://docs.arangodb.com/"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/arangodb",
+        "queryFile": "samples/projects/arangodb/queries.aql",
+        "testCommand": "task up -- arangodb"
+      }
     },
     {
       "id": "questdb",
@@ -1484,7 +1556,13 @@
           "label": "QuestDB documentation",
           "url": "https://questdb.com/docs/"
         }
-      ]
+      ],
+      "sampleProject": {
+        "kind": "container",
+        "directory": "samples/projects/questdb",
+        "queryFile": "samples/projects/questdb/queries.sql",
+        "testCommand": "task up -- questdb"
+      }
     },
     {
       "id": "iotdb",

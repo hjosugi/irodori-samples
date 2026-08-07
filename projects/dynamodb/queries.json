@@ -1,0 +1,45 @@
+{
+  "_comment": [
+    "DynamoDB feature sample for Irodori Table.",
+    "Run against `task up -- dynamodb`, then load with the seeder.",
+    "Needs the `irodori.dynamodb` connector extension.",
+    "orders and events use a composite key (customer_id, id), so",
+    "'everything for this customer' is a Query rather than a Scan.",
+    "order_items are nested inside their order: there is no join to fall back on."
+  ],
+
+  "list tables": {
+    "target": "DynamoDB_20120810.ListTables",
+    "body": {}
+  },
+
+  "get one customer by key": {
+    "target": "DynamoDB_20120810.GetItem",
+    "body": { "TableName": "customers", "Key": { "id": { "N": "42" } } }
+  },
+
+  "query this customer's orders": {
+    "target": "DynamoDB_20120810.Query",
+    "body": {
+      "TableName": "orders",
+      "KeyConditionExpression": "customer_id = :c",
+      "ExpressionAttributeValues": { ":c": { "N": "42" } }
+    }
+  },
+
+  "scan with a filter, to see what a table scan costs": {
+    "target": "DynamoDB_20120810.Scan",
+    "body": {
+      "TableName": "orders",
+      "FilterExpression": "#s = :s",
+      "ExpressionAttributeNames": { "#s": "status" },
+      "ExpressionAttributeValues": { ":s": { "S": "delivered" } },
+      "Limit": 25
+    }
+  },
+
+  "table shape": {
+    "target": "DynamoDB_20120810.DescribeTable",
+    "body": { "TableName": "orders" }
+  }
+}

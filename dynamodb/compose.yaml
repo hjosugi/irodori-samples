@@ -1,0 +1,17 @@
+name: irodori-dynamodb
+# Irodori URL: endpoint http://localhost:58000, region us-east-1,
+#              access key `irodori`, secret `irodori`
+# Needs the `irodori.dynamodb` connector extension.
+services:
+  dynamodb:
+    image: docker.io/amazon/dynamodb-local:2.5.2
+    # -sharedDb keeps every credential and region in one file, so the tables are
+    # visible whatever key the client sends.
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb"]
+    ports:
+      - "58000:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8000/ -o /dev/null -w '%{http_code}' | grep -qE '400|200'"]
+      interval: 3s
+      timeout: 3s
+      retries: 40

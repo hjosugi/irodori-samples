@@ -1,0 +1,17 @@
+name: irodori-memgraph
+# Irodori URL: bolt://localhost:57688  (no auth)
+# Needs the `irodori.memgraph` connector extension.
+# Same Cypher seed as Neo4j; applied by `scripts/seed.sh memgraph`.
+services:
+  memgraph:
+    image: docker.io/memgraph/memgraph:latest
+    command: ["--log-level=WARNING", "--telemetry-enabled=false"]
+    ports:
+      - "57688:7687"
+    volumes:
+      - ./01_samples.cypher:/seed/01_samples.cypher:ro
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'return 1;' | mgconsole || exit 1"]
+      interval: 3s
+      timeout: 5s
+      retries: 40

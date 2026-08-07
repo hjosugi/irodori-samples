@@ -1,0 +1,92 @@
+version: '3'
+
+# irodori-samples — local database containers and seed data for Irodori Table.
+#
+#   task                    list the tasks
+#   task up   -- postgres   start one engine (or: task up DB=postgres)
+#   task seed -- redis      push the seed into an engine that has no init hook
+#   task down -- postgres   stop it again
+#   task generate           regenerate every <engine>/01_samples.* from the generator
+#
+# Most engines need no seed step: PostgreSQL, MySQL, MariaDB, MongoDB, Oracle
+# and ClickHouse read `01_samples.*` from their image's init directory, so
+# `task up` alone leaves them populated.
+
+silent: true
+
+vars:
+  DB: ''
+  ENGINE_BIN:
+    sh: command -v podman >/dev/null 2>&1 && echo podman || echo docker
+
+tasks:
+  default:
+    desc: List the available tasks
+    cmds:
+      - task --list --sort none
+      - echo
+      - 'echo "engines: $(ls -d */compose.yaml 2>/dev/null | cut -d/ -f1 | tr "\n" " ")"'
+
+  generate:
+    desc: 'Regenerate every seed file (SCALE=0.1 for more rows)'
+    cmds: ['node generator/generate.mjs']
+
+  up:
+    desc: 'Start one engine (DB=postgres, or after --)'
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    cmds:
+      - '{{.ENGINE_BIN}} compose -f {{.ENGINE}}/compose.yaml up -d'
+      - 'echo "started {{.ENGINE}} — see {{.ENGINE}}/compose.yaml for the connection URL"'
+
+  down:
+    desc: 'Stop one engine and delete its volumes (DB=postgres, or after --)'
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    cmds: ['{{.ENGINE_BIN}} compose -f {{.ENGINE}}/compose.yaml down -v']
+
+  seed:
+    desc: 'Apply the seed to an engine with no init hook (redis, neo4j, memgraph, cassandra, scylladb, sqlite, duckdb)'
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "help"}}' }
+    cmds: ['scripts/seed.sh {{.ENGINE}}']
+
+  reset:
+    desc: 'up, wait, then seed (DB=postgres, or after --)'
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    cmds:
+      - task: up
+        vars: { DB: '{{.ENGINE}}' }
+      # Compose does not wait on its own healthcheck, so poll it here.
+      - |
+        for _ in $(seq 1 60); do
+          status=$({{.ENGINE_BIN}} ps --filter "name=irodori-{{.ENGINE}}" --format '{{`{{.Status}}`}}' | head -1)
+          case "$status" in
+            *healthy*) break ;;
+            *) sleep 2 ;;
+          esac
+        done
+      - 'scripts/seed.sh {{.ENGINE}} || true'
+
+  status:
+    desc: 'Show which sample engines are running'
+    cmds:
+      - '{{.ENGINE_BIN}} ps --filter "name=irodori-" --format "table {{`{{.Names}}`}}\t{{`{{.Status}}`}}\t{{`{{.Ports}}`}}"'
+
+  stop:
+    desc: 'Stop every sample engine (volumes included)'
+    cmds:
+      - |
+        for f in */compose.yaml; do
+          {{.ENGINE_BIN}} compose -f "$f" down -v >/dev/null 2>&1 || true
+        done
+        echo "all sample engines stopped"
+
+  urls:
+    desc: 'Print every connection string (same content as CONNECTIONS.md)'
+    cmds:
+      - |
+        awk '/^## URLs to paste/{f=1;next} f&&/^```$/{if(seen){exit}else{seen=1;next}} f&&seen' CONNECTIONS.md
+
+  check:
+    desc: 'Validate tracked files, and that CONNECTIONS.md matches the compose ports'
+    cmds:
+      - 'node tools/check-samples.mjs'
+      - 'node tools/check-connections.mjs'

@@ -1,0 +1,17 @@
+name: irodori-questdb
+# Irodori URL: postgres://admin:quest@localhost:58812/qdb  (Postgres wire)
+# Web console: http://localhost:59000
+# Credentials are QuestDB's fixed open-source defaults.
+services:
+  questdb:
+    image: docker.io/questdb/questdb:8.2.1
+    environment:
+      QDB_PG_ENABLED: "true"
+    ports:
+      - "58812:8812"
+      - "59000:9000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - 'http://127.0.0.1:9000/exec?query=select%201' >/dev/null || exit 1"]
+      interval: 3s
+      timeout: 3s
+      retries: 40

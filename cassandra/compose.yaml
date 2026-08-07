@@ -1,0 +1,20 @@
+name: irodori-cassandra
+# Irodori URL: CQL localhost:59042, keyspace samples (no auth)
+# Cassandra has no init hook; seed with `scripts/seed.sh cassandra`.
+services:
+  cassandra:
+    image: docker.io/library/cassandra:5
+    environment:
+      CASSANDRA_CLUSTER_NAME: irodori
+      MAX_HEAP_SIZE: 1G
+      HEAP_NEWSIZE: 200M
+      TZ: UTC
+    ports:
+      - "59042:9042"
+    volumes:
+      - ./01_samples.cql:/seed/01_samples.cql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe keyspaces' || exit 1"]
+      interval: 5s
+      timeout: 10s
+      retries: 60

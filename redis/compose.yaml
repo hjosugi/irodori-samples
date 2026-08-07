@@ -1,0 +1,16 @@
+name: irodori-redis
+# Irodori URL: redis://:irodori@localhost:56379/0
+# Redis has no init hook, so the seed is applied by `scripts/seed.sh redis`.
+services:
+  redis:
+    image: docker.io/library/redis:7-alpine
+    command: ["redis-server", "--requirepass", "irodori", "--appendonly", "no"]
+    ports:
+      - "56379:6379"
+    volumes:
+      - ./01_samples.redis:/seed/01_samples.redis:ro
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "irodori", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
