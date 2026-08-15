@@ -13,44 +13,6 @@
   },
   "managedTargets": [
     {
-      "id": "supabase",
-      "label": "Supabase Postgres",
-      "routesThrough": "postgres",
-      "status": "wire_compatible_target",
-      "whatYouCanDo": [
-        "Connect with the existing PostgreSQL engine using a Supabase direct, session-pooler, or transaction-pooler connection string.",
-        "Browse normal Postgres schemas, tables, views, extensions, and query results.",
-        "Track Supabase-specific workflow notes for SSL, Supavisor ports, RLS, pgvector, auth/storage tables, and hosted connection limits."
-      ],
-      "features": [
-        {
-          "id": "supabase-postgres-wire",
-          "title": "Postgres wire connection string",
-          "referenceOnly": true
-        },
-        {
-          "id": "supabase-pooler-modes",
-          "title": "Direct, session pooler, and transaction pooler modes",
-          "referenceOnly": true
-        },
-        {
-          "id": "supabase-extensions",
-          "title": "Hosted Postgres extensions such as pgvector and pg_graphql",
-          "referenceOnly": true
-        }
-      ],
-      "resources": [
-        {
-          "label": "Supabase repository",
-          "url": "https://github.com/supabase/supabase"
-        },
-        {
-          "label": "Connect to Supabase Postgres",
-          "url": "https://supabase.com/docs/guides/database/connecting-to-postgres"
-        }
-      ]
-    },
-    {
       "id": "aurora",
       "label": "Amazon Aurora",
       "routesThrough": "postgres/mysql",
@@ -607,6 +569,45 @@
         {
           "label": "Neon Docs",
           "url": "https://neon.com/docs"
+        }
+      ]
+    },
+    {
+      "id": "supabase",
+      "label": "Supabase",
+      "family": "relational",
+      "irodoriStatus": "wired",
+      "whatYouCanDo": [
+        "Connect to a hosted Supabase project with the dedicated engine, over TLS by default.",
+        "Use the direct, session-pooler, or transaction-pooler endpoint; the transaction pooler disables prepared statements automatically.",
+        "Browse normal Postgres schemas, tables, views, extensions, and query results.",
+        "Track RLS, pgvector and pg_graphql, auth/storage tables, and hosted connection limits as follow-ups."
+      ],
+      "features": [
+        {
+          "id": "supabase-postgres-wire",
+          "title": "Postgres wire connection over TLS",
+          "referenceOnly": true
+        },
+        {
+          "id": "supabase-pooler-modes",
+          "title": "Direct, session pooler, and transaction pooler modes",
+          "referenceOnly": true
+        },
+        {
+          "id": "supabase-extensions",
+          "title": "Hosted Postgres extensions such as pgvector and pg_graphql",
+          "referenceOnly": true
+        }
+      ],
+      "resources": [
+        {
+          "label": "Supabase repository",
+          "url": "https://github.com/supabase/supabase"
+        },
+        {
+          "label": "Connect to Supabase Postgres",
+          "url": "https://supabase.com/docs/guides/database/connecting-to-postgres"
         }
       ]
     },
