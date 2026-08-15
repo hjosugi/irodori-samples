@@ -100,3 +100,21 @@ tasks:
     cmds:
       - 'node tools/check-samples.mjs'
       - 'node tools/check-connections.mjs'
+
+  certs:
+    desc: 'Issue the local CA and certificates the secure containers need'
+    cmds: ['sh tls/generate-certs.sh']
+    status: ['test -f tls/certs/ca.crt']
+
+  up:secure:
+    desc: 'Start the TLS/alternate-auth variant of one engine (DB=postgres, or after --)'
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    deps: [certs]
+    cmds:
+      - '{{.ENGINE_BIN}} compose -f {{.ENGINE}}/compose.tls.yaml up -d'
+      - 'echo "started {{.ENGINE}} (TLS) — see {{.ENGINE}}/compose.tls.yaml for the connection URLs"'
+
+  down:secure:
+    desc: 'Stop the TLS variant of one engine and delete its volumes (DB=postgres, or after --)'
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    cmds: ['{{.ENGINE_BIN}} compose -f {{.ENGINE}}/compose.tls.yaml down -v']

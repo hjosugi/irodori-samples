@@ -1,0 +1,45 @@
+name: irodori-postgres-tls
+# Irodori URLs:
+#   scram over TLS   postgres://irodori:irodori@localhost:55433/samples?sslmode=verify-full&sslrootcert=<certs>/ca.crt
+#   client cert      postgres://irodori@localhost:55433/samples?sslmode=verify-full&sslrootcert=<certs>/ca.crt&sslcert=<certs>/client.crt&sslkey=<certs>/client.key
+#
+# A second Postgres, hardened, alongside the plaintext one rather than replacing
+# it: `task db-verify` depends on the insecure container behaving exactly as it
+# always has.
+services:
+  postgres-tls:
+    image: docker.io/library/postgres:16-alpine
+    environment:
+      POSTGRES_USER: irodori
+      POSTGRES_PASSWORD: irodori
+      POSTGRES_DB: samples
+      # Force scram rather than md5 for password logins, so the sample exercises
+      # what a modern server actually negotiates.
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    ports:
+      - "55433:5432"
+    volumes:
+      - ../tls/certs:/certs:ro
+      - ./01_samples.sql:/docker-entrypoint-initdb.d/01_samples.sql:ro
+      - ./tls/10-hba.sh:/docker-entrypoint-initdb.d/10-hba.sh:ro
+      - ./tls/20-certuser.sql:/docker-entrypoint-initdb.d/20-certuser.sql:ro
+    # Postgres refuses a key that is group- or world-readable, and refuses one it
+    # does not own. A bind mount carries the host's uid and mode, so the key is
+    # copied into place and fixed up before the server starts.
+    command:
+      - sh
+      - -c
+      - |
+        install -o postgres -g postgres -m 600 /certs/server.key /var/lib/postgresql/server.key
+        install -o postgres -g postgres -m 644 /certs/server.crt /var/lib/postgresql/server.crt
+        install -o postgres -g postgres -m 644 /certs/ca.crt /var/lib/postgresql/ca.crt
+        exec docker-entrypoint.sh postgres \
+          -c ssl=on \
+          -c ssl_cert_file=/var/lib/postgresql/server.crt \
+          -c ssl_key_file=/var/lib/postgresql/server.key \
+          -c ssl_ca_file=/var/lib/postgresql/ca.crt
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U irodori -d samples"]
+      interval: 3s
+      timeout: 3s
+      retries: 30

@@ -8,3 +8,7 @@
 .codex/skills/graphify/
 .codex/hooks.json
 graphify-out/
+
+# Locally issued sample certificates — regenerate with tls/generate-certs.sh.
+# Certificates in a repository teach the wrong habit and expire into confusion.
+tls/certs/

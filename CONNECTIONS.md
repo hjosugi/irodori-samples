@@ -85,6 +85,58 @@ Each of these rejects the shared defaults outright rather than warning:
 - **Oracle** names its pluggable database `FREEPDB1`; that is a service name,
   not a schema, and the user `irodori` owns the tables inside it.
 
+## Secure variants
+
+Every container above is plaintext and password-only, which is the right default
+for "does the query path work" and the wrong shape for testing authentication.
+`compose.tls.yaml` alongside a `compose.yaml` starts a hardened second copy on a
+different port, so `task db-verify` keeps seeing the insecure one unchanged.
+
+```
+task certs             # issue a local CA into tls/certs (gitignored)
+task up:secure DB=postgres
+task down:secure DB=postgres
+```
+
+The certificates are generated on demand and trusted only by these containers.
+Nothing here is a secret worth protecting — but certificates committed to a
+repository teach the wrong habit and expire into confusion, so they are not.
+
+### PostgreSQL (port 55433)
+
+TLS is *required*: `pg_hba.conf` has `hostssl` rules and no `host` rule at all,
+so a plaintext connection is refused rather than quietly accepted. That refusal
+is what makes the other cases meaningful — against a server that also accepts
+plaintext, every SSL mode "succeeds" whether or not TLS was negotiated.
+
+| what | connection |
+|---|---|
+| scram over TLS | `postgres://irodori:irodori@localhost:55433/samples?sslmode=verify-full&sslrootcert=$PWD/tls/certs/ca.crt` |
+| client certificate | `postgres://irodori_cert@localhost:55433/samples?sslmode=verify-full&sslrootcert=$PWD/tls/certs/ca.crt&sslcert=$PWD/tls/certs/client.crt&sslkey=$PWD/tls/certs/client.key` |
+| plaintext | refused |
+
+The client certificate's CN is `irodori_cert` and must match the database role
+exactly — a mismatch reports an unknown *user*, not a bad certificate, which
+sends you looking in the wrong place.
+
+`client.pk8.key` is the same key in PKCS#8 form. `native-tls`, which some
+connectors use, accepts only that form on Windows and macOS while the OpenSSL
+backend takes either — so a PKCS#1 key works on Linux and fails on a colleague's
+machine.
+
+### Verifying a client against it
+
+irodori-table's `tests/integration_db.rs` connects to this container through the
+connection *form* rather than a hand-written URL:
+
+```
+IRODORI_TLS_CERTS=/path/to/irodori-samples/tls/certs \
+  cargo test --test integration_db -- tls
+```
+
+That is what caught sqlx being compiled without TLS support at all
+(irodori-table/irodori-table#229).
+
 ## URLs to paste
 
 ```
