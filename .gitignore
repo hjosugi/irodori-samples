@@ -8,7 +8,14 @@
 .codex/skills/graphify/
 .codex/hooks.json
 graphify-out/
+/.task/
+/.build/
+/tools/irodori/target/
 
-# Locally issued sample certificates — regenerate with tls/generate-certs.sh.
+# Local files created by the embedded-engine seed tasks.
+/sqlite/samples.db
+/duckdb/samples.duckdb
+
+# Locally issued sample certificates — regenerate with `task certs`.
 # Certificates in a repository teach the wrong habit and expire into confusion.
 tls/certs/

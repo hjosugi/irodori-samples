@@ -6,9 +6,9 @@
 Irodori Tableでの手動チェック用のエンジン固有クエリ。
 
 ```sh
-make db-up DB=postgres
+task start -- postgres
 # Irodori Tableに接続し、projects/postgres/queries.sqlを実行
-make db-down DB=postgres
+task stop -- postgres
 ```
 
 カタログは `../db-feature-samples.json` です。

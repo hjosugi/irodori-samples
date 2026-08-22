@@ -1,5 +1,5 @@
 -- InfluxDB 3 feature sample for Irodori Table.
--- Run against `task up -- influxdb`.
+-- Run against `task start -- influxdb`.
 --
 -- Only the two time-series tables map onto a measurement. A point is keyed by
 -- measurement + tags + timestamp, so rows sharing all three collapse into one:

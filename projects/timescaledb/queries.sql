@@ -1,5 +1,5 @@
 -- TimescaleDB feature sample for Irodori Table.
--- Run against `make db-up DB=timescaledb`.
+-- Run against `task start -- timescaledb`.
 
 select version();
 

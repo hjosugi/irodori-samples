@@ -1,5 +1,5 @@
 -- TiDB feature sample for Irodori Table.
--- Run against `make db-up DB=tidb`.
+-- Run against `task start -- tidb`.
 
 select tidb_version();
 

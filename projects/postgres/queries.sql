@@ -1,5 +1,5 @@
 -- PostgreSQL feature sample for Irodori Table.
--- Run against `make db-up DB=postgres`.
+-- Run against `task start -- postgres`.
 
 select version();
 

@@ -1,120 +1,239 @@
-version: '3'
+version: "3"
 
-# irodori-samples — local database containers and seed data for Irodori Table.
+# Cross-platform entry points for the native sample manager.
 #
-#   task                    list the tasks
-#   task up   -- postgres   start one engine (or: task up DB=postgres)
-#   task seed -- redis      push the seed into an engine that has no init hook
-#   task down -- postgres   stop it again
-#   task generate           regenerate every <engine>/01_samples.* from the generator
+#   task tui                  interactive launcher
+#   task start -- postgres    start, wait until ready, and seed when needed
+#   task stop  -- postgres    stop without deleting data
+#   task reset -- postgres    delete data and recreate a ready engine
 #
-# Most engines need no seed step: PostgreSQL, MySQL, MariaDB, MongoDB, Oracle
-# and ClickHouse read `01_samples.*` from their image's init directory, so
-# `task up` alone leaves them populated.
+# DB=postgres remains supported for callers that cannot pass arguments after --.
 
 silent: true
 
 vars:
-  DB: ''
-  ENGINE_BIN:
-    sh: command -v podman >/dev/null 2>&1 && echo podman || echo docker
+  IRODORI_EXE: '{{if eq .OS "windows"}}irodori.exe{{else}}irodori{{end}}'
+  IRODORI_BIN: '{{.ROOT_DIR}}/.build/irodori/bin/{{.IRODORI_EXE}}'
+
+# Task variables provide a shell-independent override on every platform:
+# `task doctor RUNTIME=docker`.
+env:
+  IRODORI_CONTAINER_RUNTIME: '{{.RUNTIME | default .IRODORI_CONTAINER_RUNTIME}}'
 
 tasks:
-  graphify-setup:
-    desc: "Install graphify and register its skill with Claude, Copilot and Codex"
-    cmds:
-      - "sh scripts/graphify.sh setup"
-
-  graphify-update:
-    desc: "Upgrade graphify, refresh the skill, and update the knowledge graph"
-    cmds:
-      - "sh scripts/graphify.sh update"
-
   default:
-    desc: List the available tasks
+    desc: Show tasks and supported engines
+    deps: [build]
     cmds:
       - task --list --sort none
-      - echo
-      - 'echo "engines: $(ls -d */compose.yaml 2>/dev/null | cut -d/ -f1 | tr "\n" " ")"'
+      - '"{{.IRODORI_BIN}}" list'
 
-  generate:
-    desc: 'Regenerate every seed file (SCALE=0.1 for more rows)'
-    cmds: ['node generator/generate.mjs']
+  build:
+    desc: Build the native manager, TUI, and fixture generator
+    sources:
+      - tools/irodori/Cargo.toml
+      - tools/irodori/Cargo.lock
+      - tools/irodori/src/**/*.rs
+    generates:
+      - '{{.IRODORI_BIN}}'
+    cmds:
+      - cargo install --path tools/irodori --root .build/irodori --locked --force
+
+  tui:
+    desc: Open the native interactive engine launcher
+    deps: [build]
+    interactive: true
+    cmds:
+      - '"{{.IRODORI_BIN}}" tui'
+
+  list:
+    desc: List supported engines and seed modes
+    deps: [build]
+    cmds:
+      - '"{{.IRODORI_BIN}}" list'
+
+  start:
+    desc: Start one engine, wait until ready, and seed it when supported
+    deps: [build]
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
+    cmds:
+      - '"{{.IRODORI_BIN}}" start'
 
   up:
-    desc: 'Start one engine (DB=postgres, or after --)'
+    desc: Run compose up without waiting or applying a manual seed
+    deps: [build]
     vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
     cmds:
-      - '{{.ENGINE_BIN}} compose -f {{.ENGINE}}/compose.yaml up -d'
-      - 'echo "started {{.ENGINE}} — see {{.ENGINE}}/compose.yaml for the connection URL"'
-
-  down:
-    desc: 'Stop one engine and delete its volumes (DB=postgres, or after --)'
-    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
-    cmds: ['{{.ENGINE_BIN}} compose -f {{.ENGINE}}/compose.yaml down -v']
-
-  seed:
-    desc: 'Apply the seed to an engine with no init hook (redis, neo4j, memgraph, cassandra, scylladb, sqlite, duckdb)'
-    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "help"}}' }
-    cmds: ['scripts/seed.sh {{.ENGINE}}']
-
-  reset:
-    desc: 'up, wait, then seed (DB=postgres, or after --)'
-    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
-    cmds:
-      - task: up
-        vars: { DB: '{{.ENGINE}}' }
-      # Compose does not wait on its own healthcheck, so poll it here.
-      - |
-        for _ in $(seq 1 60); do
-          status=$({{.ENGINE_BIN}} ps --filter "name=irodori-{{.ENGINE}}" --format '{{`{{.Status}}`}}' | head -1)
-          case "$status" in
-            *healthy*) break ;;
-            *) sleep 2 ;;
-          esac
-        done
-      - 'scripts/seed.sh {{.ENGINE}} || true'
-
-  status:
-    desc: 'Show which sample engines are running'
-    cmds:
-      - '{{.ENGINE_BIN}} ps --filter "name=irodori-" --format "table {{`{{.Names}}`}}\t{{`{{.Status}}`}}\t{{`{{.Ports}}`}}"'
+      - '"{{.IRODORI_BIN}}" up'
 
   stop:
-    desc: 'Stop every sample engine (volumes included)'
+    desc: Stop one engine without deleting its data
+    deps: [build]
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
     cmds:
-      - |
-        for f in */compose.yaml; do
-          {{.ENGINE_BIN}} compose -f "$f" down -v >/dev/null 2>&1 || true
-        done
-        echo "all sample engines stopped"
+      - '"{{.IRODORI_BIN}}" stop'
+
+  down:
+    desc: Delete one engine and its data
+    deps: [build]
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
+    cmds:
+      - '"{{.IRODORI_BIN}}" down'
+
+  reset:
+    desc: Delete one engine and recreate it with sample data
+    deps: [build]
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
+    cmds:
+      - '"{{.IRODORI_BIN}}" reset'
+
+  seed:
+    desc: Apply or recreate one engine's generated sample data
+    deps: [build]
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
+    cmds:
+      - '"{{.IRODORI_BIN}}" seed'
+
+  status:
+    desc: Show the state of every sample engine
+    deps: [build]
+    cmds:
+      - '"{{.IRODORI_BIN}}" status'
+
+  logs:
+    desc: Show recent logs for one engine
+    deps: [build]
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
+    cmds:
+      - '"{{.IRODORI_BIN}}" logs'
+
+  stop:all:
+    desc: Stop every container-backed engine without deleting data
+    deps: [build]
+    cmds:
+      - '"{{.IRODORI_BIN}}" stop-all'
+
+  down:all:
+    desc: Delete every sample engine and its data
+    deps: [build]
+    cmds:
+      - '"{{.IRODORI_BIN}}" down-all'
 
   urls:
-    desc: 'Print every connection string (same content as CONNECTIONS.md)'
+    desc: Print every connection string
+    deps: [build]
     cmds:
-      - |
-        awk '/^## URLs to paste/{f=1;next} f&&/^```$/{if(seen){exit}else{seen=1;next}} f&&seen' CONNECTIONS.md
+      - '"{{.IRODORI_BIN}}" urls'
+
+  doctor:
+    desc: Check the native manager, container runtime, and optional local tools
+    deps: [build]
+    cmds:
+      - '"{{.IRODORI_BIN}}" doctor'
+
+  generate:
+    desc: Regenerate seed fixtures with the native tool
+    deps: [build]
+    env:
+      SCALE: '{{.SCALE | default "0.02"}}'
+      SEED: '{{.SEED | default "20260807"}}'
+    cmds:
+      - '"{{.IRODORI_BIN}}" generate'
+
+  test:
+    desc: Run native tool unit and fixture reproducibility tests
+    cmds:
+      - cargo test --manifest-path tools/irodori/Cargo.toml --locked
+
+  lint:
+    desc: Check native tool formatting and lints
+    cmds:
+      - cargo fmt --manifest-path tools/irodori/Cargo.toml --check
+      - cargo clippy --manifest-path tools/irodori/Cargo.toml --all-targets --locked -- -D warnings
 
   check:
-    desc: 'Validate tracked files, and that CONNECTIONS.md matches the compose ports'
+    desc: Run all native tests and repository validation
+    deps: [build]
     cmds:
-      - 'node tools/check-samples.mjs'
-      - 'node tools/check-connections.mjs'
+      - task: lint
+      - task: test
+      - '"{{.IRODORI_BIN}}" check'
 
   certs:
-    desc: 'Issue the local CA and certificates the secure containers need'
-    cmds: ['sh tls/generate-certs.sh']
-    status: ['test -f tls/certs/ca.crt']
+    desc: Issue the local CA and certificates used by secure containers
+    deps: [build]
+    cmds:
+      - '"{{.IRODORI_BIN}}" certs'
+
+  start:secure:
+    desc: Start the TLS variant, wait until ready, and seed it
+    deps: [certs]
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
+    cmds:
+      - '"{{.IRODORI_BIN}}" start --variant tls'
 
   up:secure:
-    desc: 'Start the TLS/alternate-auth variant of one engine (DB=postgres, or after --)'
-    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    desc: Start the TLS variant without waiting
     deps: [certs]
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
     cmds:
-      - '{{.ENGINE_BIN}} compose -f {{.ENGINE}}/compose.tls.yaml up -d'
-      - 'echo "started {{.ENGINE}} (TLS) — see {{.ENGINE}}/compose.tls.yaml for the connection URLs"'
+      - '"{{.IRODORI_BIN}}" up --variant tls'
 
   down:secure:
-    desc: 'Stop the TLS variant of one engine and delete its volumes (DB=postgres, or after --)'
+    desc: Delete the TLS variant and its data
+    deps: [build]
     vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
-    cmds: ['{{.ENGINE_BIN}} compose -f {{.ENGINE}}/compose.tls.yaml down -v']
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
+    cmds:
+      - '"{{.IRODORI_BIN}}" down --variant tls'
+
+  up:host:
+    desc: Start the host-network variant (Linux fallback)
+    deps: [build]
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
+    cmds:
+      - '"{{.IRODORI_BIN}}" up --variant host'
+
+  start:host:
+    desc: Start the host-network variant and wait until ready (Linux fallback)
+    deps: [build]
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
+    cmds:
+      - '"{{.IRODORI_BIN}}" start --variant host'
+
+  stop:host:
+    desc: Stop the host-network variant without deleting its data
+    deps: [build]
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
+    cmds:
+      - '"{{.IRODORI_BIN}}" stop --variant host'
+
+  down:host:
+    desc: Delete the host-network variant and its data
+    deps: [build]
+    vars: { ENGINE: '{{.DB | default .CLI_ARGS | default "postgres"}}' }
+    env: { IRODORI_ENGINE: "{{.ENGINE}}" }
+    cmds:
+      - '"{{.IRODORI_BIN}}" down --variant host'
+
+  graphify-setup:
+    desc: Install graphify and register its skill with Claude, Copilot and Codex
+    cmds:
+      - sh scripts/graphify.sh setup
+
+  graphify-update:
+    desc: Upgrade graphify, refresh the skill, and update the knowledge graph
+    cmds:
+      - sh scripts/graphify.sh update

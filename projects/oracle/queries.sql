@@ -1,5 +1,5 @@
 -- Oracle feature sample for Irodori Table.
--- Run against `make db-up DB=oracle`.
+-- Run against `task start -- oracle`.
 
 select sys_context('USERENV', 'SERVICE_NAME') as service_name from dual;
 

@@ -1,5 +1,5 @@
 -- ClickHouse feature sample for Irodori Table.
--- Run against `task up -- clickhouse`.
+-- Run against `task start -- clickhouse`.
 
 SELECT version();
 

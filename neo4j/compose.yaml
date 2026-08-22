@@ -1,7 +1,7 @@
 name: irodori-neo4j
 # Irodori URL: bolt://localhost:57687  user neo4j / irodoripass
 # Browser: http://localhost:57474
-# Neo4j has no init hook, so the seed is applied by `scripts/seed.sh neo4j`.
+# Neo4j has no init hook, so `task start -- neo4j` applies the managed seed.
 services:
   neo4j:
     image: docker.io/library/neo4j:5-community

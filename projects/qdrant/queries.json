@@ -1,7 +1,7 @@
 {
   "_comment": [
     "Qdrant feature sample for Irodori Table.",
-    "Run against `task up -- qdrant`, then load with the seeder.",
+    "Run against `task start -- qdrant`.",
     "Needs the `irodori.qdrant` connector extension.",
     "Vectors are built from category, supplier and price band, so a nearest",
     "neighbour result is explicable against the relational rows."

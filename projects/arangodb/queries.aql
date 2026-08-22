@@ -1,5 +1,5 @@
 // ArangoDB feature sample for Irodori Table.
-// Run against `task up -- arangodb`, then load with the seeder.
+// Run against `task start -- arangodb`.
 // Needs the `irodori.arangodb` connector extension.
 //
 // order_items is an EDGE collection: _from is the order, _to is the product.

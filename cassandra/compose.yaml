@@ -1,6 +1,6 @@
 name: irodori-cassandra
 # Irodori URL: CQL localhost:59042, keyspace samples (no auth)
-# Cassandra has no init hook; seed with `scripts/seed.sh cassandra`.
+# Cassandra has no init hook; `task start -- cassandra` applies its CQL seed.
 services:
   cassandra:
     image: docker.io/library/cassandra:5

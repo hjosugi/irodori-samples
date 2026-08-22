@@ -1,5 +1,5 @@
 // MongoDB feature sample for Irodori Table.
-// Run against `make db-up DB=mongodb` using mongosh, or paste the collection
+// Run against `task start -- mongodb` using mongosh, or paste the collection
 // query examples into Irodori's MongoDB query box.
 
 db = db.getSiblingDB("samples");

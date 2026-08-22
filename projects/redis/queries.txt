@@ -1,5 +1,5 @@
 Redis feature sample for Irodori Table.
-Run against `task up -- redis` then `task seed -- redis`.
+Run against `task start -- redis`.
 
 Redis is not a table; Irodori projects keys and values into one. The seed uses
 five data types so each renders differently.

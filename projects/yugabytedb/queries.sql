@@ -1,5 +1,5 @@
 -- YugabyteDB YSQL feature sample for Irodori Table.
--- Run against `make db-up DB=yugabytedb`.
+-- Run against `task start -- yugabytedb`.
 
 select version();
 

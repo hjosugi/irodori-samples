@@ -1,7 +1,7 @@
 {
   "_comment": [
     "Elasticsearch feature sample for Irodori Table.",
-    "Run against `task up -- elasticsearch`, then load with the seeder.",
+    "Run against `task start -- elasticsearch`.",
     "Needs the `irodori.elasticsearch` connector extension.",
     "Each key below is a request Irodori can issue; the path is the index API."
   ],

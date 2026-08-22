@@ -13,18 +13,17 @@ secret; these containers listen on localhost and hold generated data.
 ## 30-second start
 
 ```sh
-task up -- postgres          # starts it, and seeds itself on first boot
+task start -- postgres       # starts it and waits until it is ready
 # paste this into Irodori Table:
 #   postgres://irodori:irodori@localhost:55432/samples
 ```
 
-Six engines need nothing beyond `task up` — PostgreSQL, MySQL, MariaDB,
-MongoDB, Oracle and ClickHouse load their seed from the image's init hook. The
-rest want one more command:
+`task start` handles both seed paths: seven engines load their data from an init
+hook, while the manager seeds the other supported engines after they become
+ready. You can also select and manage them interactively:
 
 ```sh
-task up   -- neo4j
-task seed -- neo4j           # or: task reset -- neo4j, which does both
+task tui
 ```
 
 ## The defaults
@@ -94,8 +93,8 @@ different port, so `task db-verify` keeps seeing the insecure one unchanged.
 
 ```
 task certs             # issue a local CA into tls/certs (gitignored)
-task up:secure DB=postgres
-task down:secure DB=postgres
+task start:secure -- postgres
+task down:secure  -- postgres
 ```
 
 The certificates are generated on demand and trusted only by these containers.

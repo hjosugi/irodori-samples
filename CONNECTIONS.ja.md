@@ -13,18 +13,16 @@ Irodori Table に入れる値の一覧。`task urls` でも同じものが出る
 ## 30秒で始める
 
 ```sh
-task up -- postgres          # 起動と同時に初回投入まで終わる
+task start -- postgres       # 起動し、利用可能になるまで待つ
 # Irodori Table にこれを貼る:
 #   postgres://irodori:irodori@localhost:55432/samples
 ```
 
-`task up` だけで完結するのは6つ — PostgreSQL, MySQL, MariaDB, MongoDB,
-Oracle, ClickHouse はイメージの init フックでシードを読む。
-残りはもう1コマンド:
+`task start` が両方の方式を処理する。7エンジンは init フックから読み込み、
+その他の対応エンジンは準備完了後に管理 CLI がシードを投入する。対話操作も可能:
 
 ```sh
-task up   -- neo4j
-task seed -- neo4j           # task reset -- neo4j なら両方まとめて
+task tui
 ```
 
 ## 既定値

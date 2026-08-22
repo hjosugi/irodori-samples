@@ -1,5 +1,5 @@
 -- MySQL feature sample for Irodori Table.
--- Run against `make db-up DB=mysql`.
+-- Run against `task start -- mysql`.
 
 select version();
 

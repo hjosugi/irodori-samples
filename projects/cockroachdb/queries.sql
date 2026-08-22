@@ -1,5 +1,5 @@
 -- CockroachDB feature sample for Irodori Table.
--- Run against `make db-up DB=cockroachdb`.
+-- Run against `task start -- cockroachdb`.
 
 select version();
 

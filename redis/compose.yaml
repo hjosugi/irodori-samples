@@ -1,6 +1,6 @@
 name: irodori-redis
 # Irodori URL: redis://:irodori@localhost:56379/0
-# Redis has no init hook, so the seed is applied by `scripts/seed.sh redis`.
+# Redis has no init hook, so `task start -- redis` applies the managed seed.
 services:
   redis:
     image: docker.io/library/redis:7-alpine

@@ -1,7 +1,7 @@
 {
   "_comment": [
     "DynamoDB feature sample for Irodori Table.",
-    "Run against `task up -- dynamodb`, then load with the seeder.",
+    "Run against `task start -- dynamodb`.",
     "Needs the `irodori.dynamodb` connector extension.",
     "orders and events use a composite key (customer_id, id), so",
     "'everything for this customer' is a Query rather than a Scan.",

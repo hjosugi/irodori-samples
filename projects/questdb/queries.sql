@@ -1,5 +1,5 @@
 -- QuestDB feature sample for Irodori Table.
--- Run against `task up -- questdb`.
+-- Run against `task start -- questdb`.
 
 SELECT build();
 

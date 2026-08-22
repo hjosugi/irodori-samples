@@ -1,5 +1,5 @@
 -- MariaDB feature sample for Irodori Table.
--- Run against `make db-up DB=mariadb`.
+-- Run against `task start -- mariadb`.
 
 select version();
 

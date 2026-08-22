@@ -1,5 +1,5 @@
 // Neo4j feature sample for Irodori Table.
-// Run against `task up -- neo4j` then `task seed -- neo4j`.
+// Run against `task start -- neo4j`.
 //
 // (:Customer)-[:PLACED]->(:Order)-[:CONTAINS]->(:Product)
 // (:Customer)-[:TRIGGERED]->(:Event)

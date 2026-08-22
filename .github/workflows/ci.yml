@@ -10,11 +10,37 @@ permissions:
   contents: read
 
 jobs:
-  samples:
-    runs-on: ubuntu-24.04
+  native-manager:
+    name: Native manager (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          node-version: 24
-      - run: node tools/check-samples.mjs
+          toolchain: stable
+          components: rustfmt, clippy
+      - uses: go-task/setup-task@v1
+      - name: Format
+        run: cargo fmt --manifest-path tools/irodori/Cargo.toml --check
+      - name: Lint
+        run: cargo clippy --manifest-path tools/irodori/Cargo.toml --all-targets --locked -- -D warnings
+      - name: Test
+        run: cargo test --manifest-path tools/irodori/Cargo.toml --locked
+      - name: Build native binary through Task
+        run: task build
+      - name: Smoke-test Task entry point
+        run: task list
+      - name: Verify native fixture generator
+        run: task generate SCALE=0.02 SEED=20260807
+      - name: Check fixture reproducibility
+        run: git diff --exit-code
+      - name: Validate samples, Compose, and connections
+        if: runner.os == 'Linux'
+        run: .build/irodori/bin/irodori check

@@ -1,5 +1,5 @@
 -- SQL Server feature sample for Irodori Table.
--- Run against `make db-up DB=sqlserver`.
+-- Run against `task start -- sqlserver`.
 
 select @@version as version;
 

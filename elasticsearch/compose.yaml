@@ -1,7 +1,7 @@
 name: irodori-elasticsearch
 # Irodori URL: http://localhost:59200  (security disabled, no credentials)
 # Needs the `irodori.elasticsearch` connector extension.
-# Seed with `scripts/seed.sh elasticsearch`.
+# This is currently a connection/feature fixture without a generated seed.
 services:
   elasticsearch:
     image: docker.io/library/elasticsearch:8.15.3

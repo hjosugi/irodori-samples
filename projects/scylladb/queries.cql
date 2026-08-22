@@ -1,5 +1,5 @@
 -- ScyllaDB feature sample for Irodori Table.
--- Run against `task up -- scylladb` then `task seed -- scylladb`.
+-- Run against `task start -- scylladb`.
 --
 -- Same CQL schema and queries as the Cassandra sample; Irodori routes both
 -- through one adapter, so this is where the two should agree.

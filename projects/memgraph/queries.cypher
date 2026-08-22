@@ -1,5 +1,5 @@
 // Memgraph feature sample for Irodori Table.
-// Run against `task up -- memgraph` then `task seed -- memgraph`.
+// Run against `task start -- memgraph`.
 // Needs the `irodori.memgraph` connector extension.
 //
 // Same graph as the Neo4j sample; the dialects differ mainly in index syntax.

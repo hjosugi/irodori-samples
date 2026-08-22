@@ -1,7 +1,7 @@
 {
   "_comment": [
     "OpenSearch feature sample for Irodori Table.",
-    "Run against `task up -- openSearch`, then load with the seeder.",
+    "Run against `task start -- openSearch`.",
     "Needs the `irodori.opensearch` connector extension.",
     "The request shapes match the Elasticsearch sample; that is the point."
   ],

@@ -1,5 +1,5 @@
 -- Cassandra feature sample for Irodori Table.
--- Run against `task up -- cassandra` then `task seed -- cassandra`.
+-- Run against `task start -- cassandra`.
 --
 -- CQL has no joins. The model is a table per access pattern: `orders` and
 -- `orders_by_customer` hold the same rows under different primary keys.
